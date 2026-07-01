@@ -1,6 +1,6 @@
 # LeetCode Self-Practice Notes
 I sorted these classic algorithm problems by category for regular review.
-Every single problem contains four parts: clean Python code, my own Chinese thinking summary, short English explanation, and time & space complexity analysis.
+Every single problem contains three parts: clean Python code, short explanation, and time & space complexity analysis.
 
 ## Catalog
 1. Array & String (2)
