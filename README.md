@@ -28,13 +28,15 @@ class Solution:
         return []
 ```
 
-Explanation
+```Explanation
 My first brute force two-loop solution hit time limit exceeded for large input. I switched to a hash map to store numbers and their indexes. Calculate the complement needed for target each iteration, return two indexes once the complement is found in map.
+```
 
-Complexity Analysis
+```Complexity Analysis
 Time: O (n)
 Space: O (n)
 哈希表最多存储全部数组元素
+```
 
 ### 2. Best Time to Buy & Sell Stock
 #### Python Code
@@ -52,11 +54,13 @@ class Solution:
         return max_profit
 ```
 
-Explanation
+```Explanation
 We can only buy before selling. Track the minimum price we’ve seen as we loop through prices. Update min price if current price is lower, otherwise calculate profit and refresh max profit.
+```
 
-Complexity Analysis
+```Complexity Analysis
 Time: O (n)
 Space: O (1)
 仅两个变量存储临时数据，无额外数组
+```
 
