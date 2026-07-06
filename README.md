@@ -3,7 +3,7 @@ I sorted these classic algorithm problems by category for regular review.
 Every single problem contains three parts: clean Python code, short explanation, and time & space complexity analysis.
 
 ## Catalog
-1. Array & String (6)
+1. Array & String (10)
 2. Linked List ()
 3. Stack & Queue ()
 4. Binary Tree ()
@@ -12,7 +12,7 @@ Every single problem contains three parts: clean Python code, short explanation,
 
 ---
 
-# 1. Array & String (6)
+# 1. Array & String (10)
 ### 1. Two Sum
 #### Python Code
 ```python
@@ -153,4 +153,110 @@ Same problem as No.5, repeated practice to consolidate Kadane algorithm, focus o
 Time: O(n)
 Space: O(1)
 ```
+
+### 7. Valid Anagram
+#### Python Code
+```python
+# 26字母数组计数，固定常量空间
+class Solution:
+    def isAnagram(self, s: str, t: str) -> bool:
+        if len(s) != len(t):
+            return False
+        count = [0] * 26
+        for c in s:
+            count[ord(c)-ord('a')] += 1
+        for c in t:
+            count[ord(c)-ord('a')] -= 1
+        for num in count:
+            if num != 0:
+                return False
+        return True
+```
+
+```Explanation
+Two strings are anagrams only if character frequency matches. Check length first, use a fixed-size array of 26 to count letters, add count for s and subtract for t. All zeros means valid anagram.
+```
+
+```Complexity Analysis
+Time: O(m+n)
+Space: O(1)
+```
+
+### 8. Valid Palindrome
+#### Python Code
+```python
+# 双指针向内收缩，跳过符号空格
+class Solution:
+    def isPalindrome(self, s: str) -> bool:
+        l, r = 0, len(s)-1
+        while l < r:
+            while l < r and not s[l].isalnum():
+                l += 1
+            while l < r and not s[r].isalnum():
+                r -= 1
+            if s[l].lower() != s[r].lower():
+                return False
+            l += 1
+            r -= 1
+        return True
+```
+
+```Explanation
+Two pointers start from head and tail, skip non-alphanumeric symbols. Convert both characters to lowercase before comparison, return False once mismatch found.
+```
+
+```Complexity Analysis
+Time: O(n)
+Space: O(1)
+```
+
+### 9. Group Anagrams
+#### Python Code
+```python
+# 排序字符串作为哈希key，分组存储异位词
+from collections import defaultdict
+class Solution:
+    def groupAnagrams(self, strs: list[str]) -> list[list[str]]:
+        groups = defaultdict(list)
+        for word in strs:
+            key = ''.join(sorted(word))
+            groups[key].append(word)
+        return list(groups.values())
+```
+
+```Explanation
+Anagrams share identical sorted character sequence. Use sorted string as hash key, group all words with matching key together, then return all groups as list.
+```
+
+```Complexity Analysis
+Time: O(n * k log k)
+Space: O(nk)
+```
+
+### 10. Longest Substring Without Repeating Characters
+#### Python Code
+```python
+# 滑动窗口+哈希记录字符最新下标
+class Solution:
+    def lengthOfLongestSubstring(self, s: str) -> int:
+        char_pos = {}
+        max_len = 0
+        left = 0
+        for right, c in enumerate(s):
+            if c in char_pos and char_pos[c] >= left:
+                left = char_pos[c] + 1
+            char_pos[c] = right
+            max_len = max(max_len, right - left + 1)
+        return max_len
+```
+
+```Explanation
+Sliding window paired with hash map storing last index of each character. If duplicate exists inside window, move left pointer forward to skip duplicate, track maximum window size each iteration.
+```
+
+```Complexity Analysis
+Time: O(n)
+Space: O(min(m,n))
+```
+
 
