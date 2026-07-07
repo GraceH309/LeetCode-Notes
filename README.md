@@ -3,7 +3,7 @@ I sorted these classic algorithm problems by category for regular review.
 Every single problem contains three parts: clean Python code, short explanation, and time & space complexity analysis.
 
 ## Catalog
-1. Array & String (10)
+1. Array & String (12)
 2. Linked List ()
 3. Stack & Queue ()
 4. Binary Tree ()
@@ -12,7 +12,7 @@ Every single problem contains three parts: clean Python code, short explanation,
 
 ---
 
-# 1. Array & String (10)
+# 1. Array & String (12)
 ### 1. Two Sum
 #### Python Code
 ```python
@@ -257,6 +257,54 @@ Sliding window paired with hash map storing last index of each character. If dup
 ```Complexity Analysis
 Time: O(n)
 Space: O(min(m,n))
+```
+
+### 11. Reverse String
+#### Python Code
+```python
+# 原地双指针交换，禁止额外数组
+class Solution:
+    def reverseString(self, s: list[str]) -> None:
+        l, r = 0, len(s)-1
+        while l < r:
+            s[l], s[r] = s[r], s[l]
+            l += 1
+            r -= 1
+```
+
+```Explanation
+In-place reverse required, two pointers swap left and right characters and move toward center until they meet.
+```
+
+```Complexity Analysis
+Time: O(n)
+Space: O(1)
+```
+
+### 12. Longest Common Prefix
+#### Python Code
+```python
+# 以第一个字符串为基准逐字符比对
+class Solution:
+    def longestCommonPrefix(self, strs: list[str]) -> str:
+        if not strs:
+            return ""
+        base = strs[0]
+        for i in range(len(base)):
+            c = base[i]
+            for word in strs[1:]:
+                if i >= len(word) or word[i] != c:
+                    return base[:i]
+        return base
+```
+
+```Explanation
+Take first string as base prefix, compare each character with other strings. Mismatch or shorter word means we hit prefix boundary, return sliced base string immediately.
+```
+
+```Complexity Analysis
+Time: O(m*n)
+Space: O(1)
 ```
 
 
