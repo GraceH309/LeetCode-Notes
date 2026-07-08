@@ -515,7 +515,7 @@ Time: O(n)
 Space: O(1)
 ```
 
-#3. Stack & Queue (2)
+# 3. Stack & Queue (2)
 ### 1. Valid Parentheses
 #### Python Code
 ```python
