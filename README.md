@@ -5,9 +5,9 @@ Every single problem contains three parts: clean Python code, short explanation,
 ## Catalog
 1. Array & String (12)
 2. Linked List (8)
-3. Stack & Queue (2)
-4. Binary Tree ()
-5. Binary Search & Sort ()
+3. Stack & Queue (5)
+4. Binary Tree (10)
+5. Binary Search & Sort (5)
 6. Dynamic Programming ()
 
 ---
@@ -515,7 +515,7 @@ Time: O(n)
 Space: O(1)
 ```
 
-# 3. Stack & Queue (2)
+# 3. Stack & Queue (5)
 ### 1. Valid Parentheses
 #### Python Code
 ```python
@@ -572,3 +572,493 @@ Time: O(1)
 Space: O(n)
 ```
 
+### 3. Implement Queue using Stacks
+#### Python Code
+```python
+# 双栈模拟队列，摊还复杂度O(1)
+class MyQueue:
+    def __init__(self):
+        self.in_stack = []
+        self.out_stack = []
+    def push(self, x: int) -> None:
+        self.in_stack.append(x)
+    def transfer(self):
+        if not self.out_stack:
+            while self.in_stack:
+                self.out_stack.append(self.in_stack.pop())
+    def pop(self) -> int:
+        self.transfer()
+        return self.out_stack.pop()
+    def peek(self) -> int:
+        self.transfer()
+        return self.out_stack[-1]
+    def empty(self) -> bool:
+        return len(self.in_stack) == 0 and len(self.out_stack) == 0
+```
+
+```Explanation
+Two stacks: in stack for push, out stack for pop/peek. Transfer all elements only when out stack empty, amortized O(1) each operation.
+```
+
+```Complexity Analysis
+Time: Amortized O(1)
+Space: O(n)
+```
+
+### 4. Daily Temperatures
+#### Python Code
+```python
+# 单调递减栈存储下标，找下一个更大元素
+class Solution:
+    def dailyTemperatures(self, temperatures: list[int]) -> list[int]:
+        n = len(temperatures)
+        res = [0] * n
+        stack = []
+        for idx, temp in enumerate(temperatures):
+            while stack and temp > temperatures[stack[-1]]:
+                prev_idx = stack.pop()
+                res[prev_idx] = idx - prev_idx
+            stack.append(idx)
+        return res
+```
+
+```Explanation
+Monotonic decreasing stack stores indexes. When current temp higher than stack top index temp, calculate day difference and fill result array.
+```
+
+```Complexity Analysis
+Time: O(n)
+Space: O(n)
+```
+
+### 5. Evaluate Reverse Polish Notation
+#### Python Code
+```python
+# 后缀表达式栈计算，注意除法向零取整
+class Solution:
+    def evalRPN(self, tokens: list[str]) -> int:
+        ops = {"+","-","*","/"}
+        stack = []
+        for t in tokens:
+            if t not in ops:
+                stack.append(int(t))
+            else:
+                b = stack.pop()
+                a = stack.pop()
+                if t == "+":
+                    stack.append(a+b)
+                elif t == "-":
+                    stack.append(a-b)
+                elif t == "*":
+                    stack.append(a*b)
+                else:
+                    stack.append(int(a / b))
+        return stack[0]
+```
+
+```Explanation
+Push numbers to stack. When operator appears, pop two operands and compute. Division truncates toward zero instead of floor division.
+```
+
+```Complexity Analysis
+Time: O(n)
+Space: O(n)
+```
+
+#4. Binary Tree (10)
+### 1. Maximum Depth of Binary Tree
+#### Python Code
+```python
+# DFS递归求树深度
+class Solution:
+    def maxDepth(self, root: TreeNode) -> int:
+        if not root:
+            return 0
+        left_d = self.maxDepth(root.left)
+        right_d = self.maxDepth(root.right)
+        return max(left_d, right_d) + 1
+```
+
+```Explanation
+Recursive DFS: empty node depth 0, current depth = max(left subtree depth, right subtree depth) + 1.
+```
+
+```Complexity Analysis
+Time: O(n)
+Space: O(h)
+```
+
+### 2. Invert Binary Tree
+#### Python Code
+```python
+# 递归交换左右子树完成镜像翻转
+class Solution:
+    def invertTree(self, root: TreeNode) -> TreeNode:
+        if not root:
+            return None
+        root.left, root.right = self.invertTree(root.right), self.invertTree(root.left)
+        return root
+```
+
+```Explanation
+Recursively invert left and right subtree of every node, swap children after recursion completes.
+```
+
+```Complexity Analysis
+Time: O(n)
+Space: O(h)
+```
+
+### 3. Same Tree
+#### Python Code
+```python
+# 递归逐层比对节点
+class Solution:
+    def isSameTree(self, p: TreeNode, q: TreeNode) -> bool:
+        if not p and not q:
+            return True
+        if not p or not q:
+            return False
+        if p.val != q.val:
+            return False
+        return self.isSameTree(p.left, q.left) and self.isSameTree(p.right, q.right)
+```
+
+```Explanation
+Base case: both null → True; one null → False; value mismatch → False. Recursively check left and right child pairs.
+```
+
+```Complexity Analysis
+Time: O(n)
+Space: O(h)
+```
+
+### 4. Subtree of Another Tree
+#### Python Code
+```python
+# 嵌套辅助函数判断两棵树完全相等
+class Solution:
+    def isSubtree(self, root: TreeNode, subRoot: TreeNode) -> bool:
+        def same(a,b):
+            if not a and not b:
+                return True
+            if not a or not b or a.val != b.val:
+                return False
+            return same(a.left,b.left) and same(a.right,b.right)
+        if not root:
+            return False
+        if same(root, subRoot):
+            return True
+        return self.isSubtree(root.left, subRoot) or self.isSubtree(root.right, subRoot)
+```
+
+```Explanation
+Helper function checks identical trees. Traverse every node in main tree, return True if any node matches subtree root fully.
+```
+
+```Complexity Analysis
+Time: O(m*n)
+Space: O(h)
+```
+
+###5. Lowest Common Ancestor
+#### Python Code
+```python
+# 后序递归查找最近公共祖先
+class Solution:
+    def lowestCommonAncestor(self, root: TreeNode, p: TreeNode, q: TreeNode) -> TreeNode:
+        if not root or root == p or root == q:
+            return root
+        left = self.lowestCommonAncestor(root.left, p, q)
+        right = self.lowestCommonAncestor(root.right, p, q)
+        if left and right:
+            return root
+        return left if left else right
+```
+
+```Explanation
+Return node if hit p/q. If left and right both return non-null, current node is LCA. Pass non-null result upward otherwise.
+```
+
+```Complexity Analysis
+Time: O(n)
+Space: O(h)
+```
+
+###6. Binary Tree Level Order Traversal
+#### Python Code
+```python
+# BFS队列层序遍历
+from collections import deque
+class Solution:
+    def levelOrder(self, root: TreeNode) -> list[list[int]]:
+        res = []
+        if not root:
+            return res
+        q = deque([root])
+        while q:
+            level = []
+            sz = len(q)
+            for _ in range(sz):
+                node = q.popleft()
+                level.append(node.val)
+                if node.left:
+                    q.append(node.left)
+                if node.right:
+                    q.append(node.right)
+            res.append(level)
+        return res
+```
+
+```Explanation
+BFS with queue, record size of queue before each layer to separate levels, collect values per layer into 2D list.
+```
+
+```Complexity Analysis
+Time: O(n)
+Space: O(h)
+```
+
+###7. Validate BST
+#### Python Code
+```python
+# DFS携带上下边界校验二叉搜索树
+class Solution:
+    def isValidBST(self, root: TreeNode) -> bool:
+        def dfs(node, low, high):
+            if not node:
+                return True
+            if not (low < node.val < high):
+                return False
+            return dfs(node.left, low, node.val) and dfs(node.right, node.val, high)
+        return dfs(root, float('-inf'), float('inf'))
+```
+
+```Explanation
+Recursive DFS with value bounds. Left subtree values < current val, right subtree > current val, update bounds for child nodes recursively.
+```
+
+```Complexity Analysis
+Time: O(n)
+Space: O(h)
+```
+
+###8. Kth Smallest Element in BST
+#### Python Code
+```python
+# BST中序遍历升序，迭代计数到第k个节点返回
+class Solution:
+    def kthSmallest(self, root: TreeNode, k: int) -> int:
+        stack = []
+        cur = root
+        cnt = 0
+        while cur or stack:
+            while cur:
+                stack.append(cur)
+                cur = cur.left
+            cur = stack.pop()
+            cnt += 1
+            if cnt == k:
+                return cur.val
+            cur = cur.right
+        return -1
+```
+
+```Explanation
+In-order traversal of BST yields sorted values. Count visited nodes, return value when count reaches k without full tree traversal.
+```
+
+```Complexity Analysis
+Time: O(h+k)
+Space: O(h)
+```
+
+###9. Path Sum
+#### Python Code
+```python
+# 递归递减目标值，叶子节点判断匹配
+class Solution:
+    def hasPathSum(self, root: TreeNode, targetSum: int) -> bool:
+        if not root:
+            return False
+        if not root.left and not root.right:
+            return root.val == targetSum
+        sub = targetSum - root.val
+        return self.hasPathSum(root.left, sub) or self.hasPathSum(root.right, sub)
+```
+
+```Explanation
+Subtract current node value from target each recursion. Check if leaf value equals remaining target when reaching leaf node.
+```
+
+```Complexity Analysis
+Time: O(n)
+Space: O(h)
+```
+
+###10. Binary Tree Diameter
+#### Python Code
+```python
+# 后序求深度同步更新全局最大直径
+class Solution:
+    def diameterOfBinaryTree(self, root: TreeNode) -> int:
+        self.max_d = 0
+        def depth(node):
+            if not node:
+                return 0
+            l = depth(node.left)
+            r = depth(node.right)
+            self.max_d = max(self.max_d, l + r)
+            return max(l, r) + 1
+        depth(root)
+        return self.max_d
+```
+
+```Explanation
+Calculate subtree depth recursively, update global max diameter with sum of left & right depth at each node.
+```
+
+```Complexity Analysis
+Time: O(n)
+Space: O(h)
+```
+
+#5. Binary Search & Sort (5)
+### 1. Binary Search
+#### Python Code
+```python
+# 标准左闭右闭区间二分查找
+class Solution:
+    def search(self, nums: list[int], target: int) -> int:
+        l, r = 0, len(nums)-1
+        while l <= r:
+            mid = (l + r) // 2
+            if nums[mid] == target:
+                return mid
+            elif nums[mid] < target:
+                l = mid + 1
+            else:
+                r = mid - 1
+        return -1
+```
+
+```Explanation
+Classic binary search with closed interval [l, r]. Adjust left/right bound based on mid value, return index if target found.
+```
+
+```Complexity Analysis
+Time: O(log n)
+Space: O(1)
+```
+
+### 2. Search Insert Position
+#### Python Code
+```python
+# 二分查找，循环结束l即为插入位置
+class Solution:
+    def searchInsert(self, nums: list[int], target: int) -> int:
+        l, r = 0, len(nums)-1
+        while l <= r:
+            mid = (l + r) // 2
+            if nums[mid] == target:
+                return mid
+            elif nums[mid] < target:
+                l = mid + 1
+            else:
+                r = mid - 1
+        return l
+```
+
+```Explanation
+Binary search, variable l stores insert index after loop ends, works for all edge cases of target size.
+```
+
+```Complexity Analysis
+Time: O(log n)
+Space: O(1)
+```
+
+### 3. First Bad Version
+#### Python Code
+```python
+# API接口已定义，二分查找左边界
+def isBadVersion(version: int) -> bool:
+    pass
+class Solution:
+    def firstBadVersion(self, n: int) -> int:
+        l, r = 1, n
+        while l < r:
+            mid = (l + r) // 2
+            if isBadVersion(mid):
+                r = mid
+            else:
+                l = mid + 1
+        return l
+```
+
+```Explanation
+Binary search left boundary of bad version. Narrow right bound if mid is bad, move left forward if mid good. l == r at exit.
+```
+
+```Complexity Analysis
+Time: O(log n)
+Space: O(1)
+```
+
+### 4. Find Peak Element
+#### Python Code
+```python
+# 二分找峰值，峰值一定存在
+class Solution:
+    def findPeakElement(self, nums: list[int]) -> int:
+        l, r = 0, len(nums)-1
+        while l < r:
+            mid = (l + r) // 2
+            if nums[mid] > nums[mid+1]:
+                r = mid
+            else:
+                l = mid + 1
+        return l
+```
+
+```Explanation
+Peak always exists. If mid > mid+1, peak lies left half; else right half, shrink range until l == r.
+```
+
+```Complexity Analysis
+Time: O(log n)
+Space: O(1)
+```
+
+### 5. Search in Rotated Sorted Array
+#### Python Code
+```python
+# 旋转有序数组二分，先判断有序区间
+class Solution:
+    def search(self, nums: list[int], target: int) -> int:
+        l, r = 0, len(nums)-1
+        while l <= r:
+            mid = (l + r) // 2
+            if nums[mid] == target:
+                return mid
+            if nums[l] <= nums[mid]:
+                if nums[l] <= target < nums[mid]:
+                    r = mid - 1
+                else:
+                    l = mid + 1
+            else:
+                if nums[mid] < target <= nums[r]:
+                    l = mid + 1
+                else:
+                    r = mid - 1
+        return -1
+```
+
+```Explanation
+Rotated sorted array binary search. Check which half is sorted, judge if target inside sorted range to adjust bounds.
+```
+
+```Complexity Analysis
+Time: O(log n)
+Space: O(1)
+```
