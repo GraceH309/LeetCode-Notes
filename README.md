@@ -665,7 +665,7 @@ Time: O(n)
 Space: O(n)
 ```
 
-#4. Binary Tree (10)
+# 4. Binary Tree (10)
 ### 1. Maximum Depth of Binary Tree
 #### Python Code
 ```python
@@ -923,7 +923,7 @@ Time: O(n)
 Space: O(h)
 ```
 
-#5. Binary Search & Sort (5)
+# 5. Binary Search & Sort (5)
 ### 1. Binary Search
 #### Python Code
 ```python
