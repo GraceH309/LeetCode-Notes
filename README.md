@@ -8,7 +8,7 @@ Every single problem contains three parts: clean Python code, short explanation,
 3. Stack & Queue (5)
 4. Binary Tree (10)
 5. Binary Search & Sort (5)
-6. Dynamic Programming ()
+6. Dynamic Programming (3)
 
 ---
 
@@ -1062,3 +1062,80 @@ Rotated sorted array binary search. Check which half is sorted, judge if target 
 Time: O(log n)
 Space: O(1)
 ```
+
+# 6. Dynamic Programming (3)
+### 1. Climbing Stairs
+#### Python Code
+```python
+# dp滚动变量优化空间，类斐波那契
+class Solution:
+    def climbStairs(self, n: int) -> int:
+        if n <= 2:
+            return n
+        a, b = 1, 2
+        for _ in range(3, n+1):
+            c = a + b
+            a = b
+            b = c
+        return b
+```
+
+```Explanation
+DP recurrence: dp[i] = dp[i-1] + dp[i-2]. Optimize space with two rolling variables instead of full array.
+```
+
+```Complexity Analysis
+Time: O(n)
+Space: O(1)
+```
+
+### 2. House Robber
+#### Python Code
+```python
+# 滚动变量压缩dp空间，不能抢相邻房屋
+class Solution:
+    def rob(self, nums: list[int]) -> int:
+        prev1, prev2 = 0, 0
+        for num in nums:
+            cur = max(prev1, prev2 + num)
+            prev2 = prev1
+            prev1 = cur
+        return prev1
+```
+
+```Explanation
+Cannot rob adjacent houses. Current max = max(skip current, rob current + two houses before). Rolling variables save space.
+```
+
+```Complexity Analysis
+Time: O(n)
+Space: O(1)
+```
+
+### 3. House Robber II
+#### Python Code
+```python
+# 环形房屋拆分成两种线性情况分别计算
+class Solution:
+    def rob(self, nums: list[int]) -> int:
+        def sub_rob(arr):
+            p1, p2 = 0, 0
+            for n in arr:
+                c = max(p1, p2 + n)
+                p2 = p1
+                p1 = c
+            return p1
+        if len(nums) == 1:
+            return nums[0]
+        return max(sub_rob(nums[1:]), sub_rob(nums[:-1]))
+```
+
+```Explanation
+Houses form circle, first and last cannot be robbed together. Compute max of two subarrays: exclude first, exclude last.
+```
+
+```Complexity Analysis
+Time: O(n)
+Space: O(1)
+```
+
