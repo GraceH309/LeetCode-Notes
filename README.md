@@ -1,6 +1,6 @@
 # LeetCode notes
 
-Note: The large volume of early commits stems from migrating offline notes to this repository. I will keep making incremental improvements over time
+Note: The large volume of early commits stems from migrating offline notes to this repository. I will keep making incremental improvements over time.
 
 Notes from grinding LeetCode, mostly in Python. I keep them here so I can find my
 own solutions again before an interview instead of re-deriving from scratch.
